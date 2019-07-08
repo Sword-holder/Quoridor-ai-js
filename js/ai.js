@@ -78,8 +78,8 @@ function computerMove() {
                 var walls_with_blocker = wallSimulations[worstWallForComp] + "," + nextPart;  
                 var inNo = placeVertWall_COMPUTE(wallSimulations[worstWallForComp],noWalls_t,walls_t,10,10,playerLoc,oppLoc,'c');
             }          
-            for (var t=0;t<wallSimulations.length;t++) {  
-                if (inNo[0].indexOf(wallSimulations[t])!=-1) {
+            for (var t=0;t<wallSimulations.length;t++) {
+                if (inNo != null && inNo != undefined && inNo[0].indexOf(wallSimulations[t])!=-1) {
                     var whatWallPlace = $('#board td[data-pos='+wallSimulations[t]+']').attr('class');
                     if (whatWallPlace=="wallPlacementHoriz") {  
                         var test_wall_1 = wallSimulations[t];
