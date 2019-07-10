@@ -1,5 +1,6 @@
 import socket
 from decision import make_decision
+import numpy as np
 
 class Communicator(object):
 

@@ -177,7 +177,7 @@ $(document).ready(function() {
             <td data-pos='1-2' class='wallPlacementVert'></td>
         <td data-pos='2'> </td> 
             <td data-pos='2-3' class='wallPlacementVert'></td>
-        <td data-pos='3'><div class='pieceComputer'></div></td> 
+        <td data-pos='3'><!-- <div class='pieceComputer'> --> </div></td> 
             <td data-pos='3-4' class='wallPlacementVert'></td>
         <td data-pos='4'></td>
             <td data-pos='4-5' class='wallPlacementVert'></td> 
@@ -363,7 +363,7 @@ $(document).ready(function() {
             <td data-pos='43-44' class='wallPlacementVert_NOHOVER'></td>
         <td data-pos='44'></td> 
             <td data-pos='44-45' class='wallPlacementVert_NOHOVER'></td>
-        <td data-pos='45'><div class='piecePlayer'></div> </td> 
+        <td data-pos='45'> <!-- <div class='piecePlayer'></div> --> </td> 
             <td data-pos='45-46' class='wallPlacementVert_NOHOVER'></td>
         <td data-pos='46'></td>
             <td data-pos='46-47' class='wallPlacementVert_NOHOVER'></td> 
@@ -382,6 +382,44 @@ $(document).ready(function() {
 <textarea id='walls'></textarea>
 <br>
 <textarea id='possibleWalls'></textarea>   
+
+<!-- 供外部调用的控制程序 -->
+<script>
+    function setPlace(type, row, col) {
+        $("#board tbody").children().eq(2 * row).children().eq(2 * col).html(`<div class="` + type + `"></div>`);
+    }
+    function setAIPlace(row, col) {
+        setPlace("pieceComputer", row, col);
+    }
+    function setOpponentPlace(row, col) {
+        setPlace("piecePlayer", row, col);
+    }
+    function setWall(type, row, col) {
+        if (type == "horizontal") {
+            var wall = $("#board tbody").children().eq(2 * row + 1).children().eq(2 * col);
+            wall.addClass("wallPlacementHoriz_NOHOVER keepWall");
+            wall.next().addClass("possibleWall keepWall")
+            wall.next().next().addClass("wallPlacementHoriz_NOHOVER keepWall");
+        }
+        else if (type == "vertical") {
+            $("#board tbody").children().eq(2 * row).children().eq(2 * col + 1).addClass("wallPlacementVert_NOHOVER keepWall");
+            $("#board tbody").children().eq(2 * row + 1).children().eq(2 * col + 1).addClass("possibleWall keepWall");
+            $("#board tbody").children().eq(2 * row + 2).children().eq(2 * col + 1).addClass("wallPlacementVert_NOHOVER keepWall");
+        }
+    }
+    function setHorizontalWall(row, col) {
+        setWall("horizontal", row, col);
+    }
+    function setVerticalWall(row, col) {
+        setWall("vertical", row, col);
+    }
+    function setAIWallNumbers(nums) {
+        $('#showCompPieces').children().next().text(nums);
+    }
+    function setOpponentWallNumbers(nums) {
+        $('#showPlayerPieces').children().next().text(nums);
+    }
+</script>
 
 </body>
 </html>
