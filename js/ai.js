@@ -14,7 +14,7 @@ function computerMove() {
     noWalls = noWalls.split(',');   
     
     // begin simulation              
-    simulation(noWalls,compMoves[1]);
+    return simulation(noWalls,compMoves[1]);
     
     function simulation(wallSimulations,moveSimulations) {
         var playerWallsLeft = $('#showPlayerPieces').children().next().text();
@@ -406,7 +406,9 @@ function computerMove() {
         console.log("BEST WALL: "+bestWall); 
         console.log("BEST MOVE: "+bestMove);
         console.log("SHORTEST PATHS: "+arrShortestMoves_b);  
-        
+
+        var bestAction = null;
+
         // split board up - heuristic-ish for stopping long paths
         if (ranWallMove<0.3 && (wallSimulations.indexOf("21-22")!=-1 && wallSimulations.indexOf("22-23")!=-1 && 
                                 wallSimulations.indexOf("39-40")!=-1 && wallSimulations.indexOf("40-41")!=-1)) {      
@@ -415,13 +417,15 @@ function computerMove() {
             else if (r<0.5) { var p ="22-23"; } 
             else if (r<0.75) { var p = "39-40"; } 
             else { var p = "40-41"; }   
-            placeVertWall(p);         
+            placeVertWall(p);
+            bestAction = p;
         }
         // decide what move to make out of best options      
         else if (doublePlaceWall!=null && typeof wallSimulations[doublePlaceWall]!='undefined' && wallPreventTrap==null && 
         high_change_player-arrShortestMoves_b[0]<7 && !futureWall) {
             console.log("DOUBLE PLACE WALL: "+wallSimulations[doublePlaceWall]);      
             var whatWallPlace = $('#board td[data-pos='+(wallSimulations[doublePlaceWall])+']').attr('class'); 
+            bestAction = wallSimulations[doublePlaceWall];
             if (whatWallPlace=="wallPlacementHoriz") { var wall = placeHorizWall(wallSimulations[doublePlaceWall]); }
             else if (whatWallPlace=="wallPlacementVert") { var wall = placeVertWall(wallSimulations[doublePlaceWall]); } 
         }
@@ -429,6 +433,7 @@ function computerMove() {
         else if (wallPreventTrap!=null && arrShortestMoves_b[1]-arrShortestMoves_b[0]<=2 && high_change_player-arrShortestMoves_b[0]<6 && playerWallsLeft-compWallsLeft<3) {
             console.log("COMPUTER TRAP WALL: "+wallPreventTrap); 
             var whatWallPlace = $('#board td[data-pos='+(wallPreventTrap)+']').attr('class'); 
+            bestAction = wallPreventTrap;
             if (whatWallPlace=="wallPlacementHoriz") { var wall = placeHorizWall(wallPreventTrap); }
             else if (whatWallPlace=="wallPlacementVert") { var wall = placeVertWall(wallPreventTrap); }     
         }                    
@@ -445,22 +450,28 @@ function computerMove() {
             if (arrShortestMoves_b[1]-arrShortestMoves_b[0]>=3 && arrShortestMoves_a[bestWall_sp][1]-arrShortestMoves_b[1]<=getDiff) {
                 console.log("WALL IS OK FOR COMPUTER (LOSING)");
                 var whatWallPlace = $('#board td[data-pos='+(bestWall)+']').attr('class'); 
+                bestAction = bestWall;
                 if (whatWallPlace=="wallPlacementHoriz") { var wall = placeHorizWall(bestWall); }
                 else if (whatWallPlace=="wallPlacementVert") { var wall = placeVertWall(bestWall); } 
             } else if (arrShortestMoves_b[1]-arrShortestMoves_b[0]<3) {
                 console.log("WALL IS OK FOR COMPUTER (NOT LOSING)")
                 var whatWallPlace = $('#board td[data-pos='+(bestWall)+']').attr('class'); 
+                bestAction = bestWall;
                 if (whatWallPlace=="wallPlacementHoriz") { var wall = placeHorizWall(bestWall); }
                 else if (whatWallPlace=="wallPlacementVert") { var wall = placeVertWall(bestWall); }     
             } else {
                 console.log("WALL NOT HELPFUL FOR COMPUTER");
+                bestAction = bestMove;
                 movePiece(compMoves[0],bestMove);     
             }
             
         } 
         else {  
+            bestAction = bestMove;
             movePiece(compMoves[0],bestMove);
-        }       
+        }   
+        console.log("Best action: ", bestAction);  
+        return bestAction;  
     }            
 }
 
